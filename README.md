@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SpendNest Revenue Intelligence Inbox
 
 A sales manager workspace and intelligence engine for SpendNest, transforming raw calls, meetings, transcripts, and late-arriving delivery updates into an actionable, audit-ready operational workspace.
@@ -128,3 +129,6 @@ Clicking **"Export ZIP & Manifest"** downloads `spendnest_revenue_inbox_export_2
 - **Known Limitations:**
   1. Single-day time window (21 August 2026): all interactions occurred on one local date; multi-day trendlines cannot be established.
   2. 26 background records lack audio/transcripts; these are surfaced in intake triage rather than having fabricated summaries.
+=======
+# spendnest-revenue-intelligence
+>>>>>>> 2647dce564e969d25e6710891d0bef9c75ace104
