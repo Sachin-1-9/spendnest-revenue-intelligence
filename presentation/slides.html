@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SpendNest Revenue Intelligence Inbox - Presentation Slides</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fafaf9;
+      --card-bg: #ffffff;
+      --text: #1c1917;
+      --text-muted: #57534e;
+      --primary: #1e4d38;
+      --cyan: #0f766e;
+      --emerald: #166534;
+      --amber: #9a3412;
+      --rose: #991b1b;
+      --border: #e7e5e4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    .slide-deck {
+      width: 100%;
+      max-width: 1100px;
+    }
+    .slide {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      page-break-after: always;
+      position: relative;
+    }
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .slide-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--primary);
+      background: rgba(30, 77, 56, 0.08);
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 1.25rem 0 0.75rem;
+      color: var(--cyan);
+    }
+    p, li {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    strong { color: var(--text); }
+    ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .box {
+      background: #fafaf9;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .badge-rose { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .badge-amber { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+    .badge-cyan { background: #f0fdfa; color: #0f766e; border: 1px solid #ccfbf1; }
+    .badge-emerald { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .citation {
+      font-style: italic;
+      border-left: 3px solid var(--primary);
+      padding-left: 0.75rem;
+      margin: 0.5rem 0;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    @media print {
+      body { background: #ffffff; color: #000000; padding: 0; }
+      .slide { background: #ffffff; border: 1px solid #ccc; color: #000; box-shadow: none; padding: 2rem; }
+      p, li { color: #333; }
+      strong { color: #000; }
+      .box { background: #f8fafc; border: 1px solid #ddd; }
+      .slide-num { background: #eee; color: #333; }
+      h2, h3 { color: #111; }
+      .citation { border-left-color: #333; color: #222; }
+    }
+  </style>
+</head>
+<body>
+  <div class="slide-deck">
+    
+    <!-- SLIDE 1 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>The Manager Problem & 3 Core Findings</h2>
+        <span class="slide-num">SLIDE 1 OF 5</span>
+      </div>
+      <p style="margin-bottom: 1.25rem;">
+        <strong>The Problem:</strong> Sales managers drown in uncurated telephony and calendar logs where stored labels misrepresent actual conversation content, uncaptured calls are mistaken for active rejections, and conclusions lack verifiable evidence.
+      </p>
+
+      <div class="grid-2">
+        <div class="box">
+          <span class="badge badge-rose">Finding 1: Outbound Boundary Adherence</span>
+          <p><strong>C01 (Arun / Harborlight Advisory):</strong> Prospect strongly objected to cold outreach on private work number.</p>
+          <div class="citation">"This number is for my work, not for people to sell things to me... Our processes are already very automated... I don't think this is something we need."</div>
+          <p><strong>Product Impact:</strong> Routes to Sales Coaching and initiates DNC suppression to protect company brand reputation.</p>
+        </div>
+
+        <div class="box">
+          <span class="badge badge-amber">Finding 2: Customer Bug Masked as Sales Mtg</span>
+          <p><strong>M07 Update (Willowfield Trust):</strong> Calendar title suggested a sales discussion, but arriving transcript proved a software defect.</p>
+          <div class="citation">"The first one is editing the description... I am changing this event-payment description... It is still the old description." (Turns 3–7)</div>
+          <p><strong>Product Impact:</strong> Triggers technical support escalation; preserves manager route while alerting engineering.</p>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top: 1.25rem;">
+        <span class="badge badge-cyan">Finding 3: Referral Name-Dropping Boundary</span>
+        <p><strong>C09 (Meera / Vedant):</strong> Prospect provided business head Mr. Rishabh as contact but strictly prohibited using his name: <em>"No, please don't use my name."</em></p>
+        <p><strong>Product Impact:</strong> Sales intelligence warning explicitly prevents rep from referencing the referral, safeguarding prospect goodwill.</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>Interface Choices & Deliberate Omissions</h2>
+        <span class="slide-num">SLIDE 2 OF 5</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <h3>What We Prominently Built</h3>
+          <ul>
+            <li><strong>Explicit Denominators Everywhere:</strong>
+              <ul>
+                <li>Selected Activity: 44 total records (30 calls, 14 meetings) on 21 Aug 2026.</li>
+                <li>Transcript Coverage: 17/44 (38.6%) &rarr; 18/44 (40.9%) post-update.</li>
+                <li>Connection Rate: 11/30 (36.7%) non-null call records.</li>
+              </ul>
+            </li>
+            <li><strong>Clear Role Separation:</strong> Distinct badges for Call Reps (dialers) vs. Meeting Organizers (calendar coordinators).</li>
+            <li><strong>Interactive Replay Suite:</strong> 1-click in-app protocol proving deduplication and override preservation.</li>
+            <li><strong>Traceable Evidence Drawer:</strong> Clickable turn citations side-by-side with raw payloads.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Deliberately Rejected Decision</h3>
+          <div class="box">
+            <span class="badge badge-rose">Rejected Choice</span>
+            <p><strong>Automated Pipeline Values & Rep Rankings:</strong></p>
+            <p style="margin-top: 0.5rem;">We considered synthesizing total deal pipeline values and performance stack rankings across reps.</p>
+            <p style="margin-top: 0.5rem;"><strong>Why Rejected:</strong> The dataset contains no authoritative CRM deal table, pipeline stages, or account lifetime values. Fabricating pipeline currency figures from conversational interest would create dangerously misleading revenue forecasts.</p>
+            <p style="margin-top: 0.5rem;"><strong>Trade-off Accepted:</strong> The workspace focuses on verifiable conversation signals and stated next steps without speculative financial figures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>Routing Design & Difficult Case (C04)</h2>
+        <span class="slide-num">SLIDE 3 OF 5</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <h3>Differentiated Routing Taxonomy</h3>
+          <ul>
+            <li><strong>Deal Next Steps:</strong> Commercial evaluations needing collateral or pricing (M03, C03, C05).</li>
+            <li><strong>Sales Coaching:</strong> Rep qualification feedback and objection handling (C01, C06, C09, C10).</li>
+            <li><strong>Customer Success:</strong> Bug reports, technical support, vendor evaluations (M07, M02, M10).</li>
+            <li><strong>Partnerships:</strong> Channel partnerships for incorporation & accounts (M01, C07).</li>
+            <li><strong>Onboarding & Ops:</strong> Client migration, permissions setup (M04, M09).</li>
+            <li><strong>Uncaptured Triage:</strong> Uncaptured dials, silent meetings (B01-B20, M05, M08).</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>The Difficult Case: C04</h3>
+          <div class="box">
+            <span class="badge badge-amber">The Paradox: Voicemail Anomaly</span>
+            <p><strong>Stored Metadata:</strong> <code>is_connected: false</code>, <code>is_conversation: false</code>.</p>
+            <p style="margin-top: 0.5rem;"><strong>The Reality:</strong> Arun left a substantive 95-second voicemail resolving an earlier bounced proposal:</p>
+            <div class="citation">"My understanding is that our information first went to the wrong email address. We subsequently used the corrected address you gave us..."</div>
+            <p style="margin-top: 0.5rem;"><strong>Our Resolution:</strong> Overrode the machine disconnection flag to route C04 to <em>Deal Next Steps</em> with a scheduled tracking reminder.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>Verification of Numbers & Analytical Conclusions</h2>
+        <span class="slide-num">SLIDE 4 OF 5</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="box">
+          <span class="badge badge-emerald">Verified Numbers</span>
+          <ul>
+            <li><strong>Total Records (44):</strong> Initial batch = 44. Re-importing initial batch ignores 44 duplicates; count strictly remains 44.</li>
+            <li><strong>Revision Ingestion (M07):</strong> Update batch (revision 2) replaces M07 payload with 27 turns. Unique count stays 44. Coverage increases from 17 to 18 (40.91%).</li>
+            <li><strong>Idempotent Re-Import:</strong> Re-importing initial batch after update rejects revision 1 (rev 1 &lt; rev 2). M07 remains revision 2.</li>
+            <li><strong>Connection Rate:</strong> 11 / 30 = 36.67% (11 connected, 19 not connected).</li>
+          </ul>
+        </div>
+
+        <div class="box">
+          <span class="badge badge-cyan">Verified Conclusions</span>
+          <ul>
+            <li><strong>Verifiable Quotation Engine:</strong> Every recommendation links to a specific 1-based meeting turn (e.g. <code>M03 Turn 36</code>) or exact call quote.</li>
+            <li><strong>Honest Uncertainty Isolation:</strong> What the evidence does NOT establish (e.g. unstated budgets, unverified signing authority) is explicitly declared.</li>
+            <li><strong>Stated Next Step Ownership:</strong> Owners are assigned only when explicitly stated (e.g. <code>[Kiran]</code>, <code>[Arun]</code>, <code>[Implementation Team]</code>).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>Trade-Offs, AI Usage & Roadmap</h2>
+        <span class="slide-num">SLIDE 5 OF 5</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="box">
+          <span class="badge badge-cyan">Architecture & AI Disclosure</span>
+          <p><strong>Pre-Generated Intelligence:</strong> Evidence-grounded dossiers, citations, and daily brief were prepared beforehand and bundled client-side. Zero runtime AI failure risk, rate limits, or network latency during review.</p>
+          <p style="margin-top: 0.75rem;"><strong>Dynamic Runtime State Engine:</strong> Idempotent batch ingestion, revision replacement, manual override preservation, and ZIP archive packaging run dynamically in-browser.</p>
+        </div>
+
+        <div class="box">
+          <span class="badge badge-emerald">Known Limits & Future Roadmap</span>
+          <p><strong>Known Limitations:</strong></p>
+          <ul>
+            <li>Single-day snapshot (21 Aug 2026): no multi-week velocity trends.</li>
+            <li>26 uncaptured records have no audio, limiting insight to telephony metadata.</li>
+          </ul>
+          <p style="margin-top: 0.5rem;"><strong>Roadmap:</strong></p>
+          <ul>
+            <li>Live telephony and web meeting recording connectors.</li>
+            <li>Bi-directional CRM sync for automated task and DNC creation.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
