@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Navbar } from './components/Navbar';
-import { KpiCards } from './components/KpiCards';
-import { FilterToolbar } from './components/FilterToolbar';
-import { RecordsTable } from './components/RecordsTable';
+import { Sidebar } from './components/Sidebar';
+import { TopBar } from './components/TopBar';
+import { ActiveTabType } from './components/Navbar';
+import { InboxView } from './components/views/InboxView';
+import { AnalyticsView } from './components/views/AnalyticsView';
+import { BriefView } from './components/views/BriefView';
+import { ReplayView } from './components/views/ReplayView';
+import { SlidesView } from './components/views/SlidesView';
 import { RecordDrawer } from './components/RecordDrawer';
-import { ReplayModal } from './components/ReplayModal';
-import { ManagerBriefModal } from './components/ManagerBriefModal';
+import { MetricsGuideModal } from './components/MetricsGuideModal';
 
 import rawInitial from './data/rawInitial.json';
 import rawUpdate from './data/rawUpdate.json';
@@ -23,22 +26,31 @@ import {
 import { exportArchiveZip } from './utils/exporter';
 
 export const App: React.FC = () => {
-  // Load or initialize state
+  // Navigation State (5 Dedicated Views)
+  const [activeTab, setActiveTab] = useState<ActiveTabType>('inbox');
+
+  // Post-update state helper (Assignment Page 4 requirement: open in final post-update state)
+  const getPostUpdateState = () => {
+    const s1 = initializeStateFromBatch(rawInitial as unknown as DeliveryEnvelope);
+    const { newState } = applyBatch(s1, rawUpdate as unknown as DeliveryEnvelope);
+    return newState;
+  };
+
+  // Load or initialize state (defaults to post-update state as specified by assignment brief)
   const [recordsState, setRecordsState] = useState<Record<string, ManagedRecordState>>(() => {
     const saved = loadStateFromStorage();
     if (saved && Object.keys(saved).length > 0) {
       return saved;
     }
-    return initializeStateFromBatch(rawInitial as unknown as DeliveryEnvelope);
+    return getPostUpdateState();
   });
 
-  // Drawer & Modal states
+  // Drawer & Guide Modal states
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [isReplayOpen, setIsReplayOpen] = useState<boolean>(false);
-  const [isBriefOpen, setIsBriefOpen] = useState<boolean>(false);
+  const [isMetricsGuideOpen, setIsMetricsGuideOpen] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
 
-  // Filters
+  // Filters for Inbox
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedSourceType, setSelectedSourceType] = useState<'all' | 'call' | 'meeting'>('all');
   const [selectedPerson, setSelectedPerson] = useState<string>('all');
@@ -53,7 +65,6 @@ export const App: React.FC = () => {
   // Derived records array
   const allRecordsList = useMemo(() => {
     return Object.values(recordsState).sort((a, b) => {
-      // Sort: usable transcripts first, then by record_ref
       const aUsable = a.source_record.source_type === 'call' 
         ? Boolean((a.source_record.payload as any).transcript?.trim())
         : Boolean(a.source_record.transcript_payload?.turns?.length);
@@ -190,6 +201,19 @@ export const App: React.FC = () => {
     setRecordsState(prev => resetRecordRoute(prev, key));
   };
 
+  // State Switchers (Page 4 requirement)
+  const handleLoadPostUpdate = () => {
+    const postUpdate = getPostUpdateState();
+    setRecordsState(postUpdate);
+    setSelectedKey(null);
+  };
+
+  const handleLoadInitialBatch = () => {
+    const initial = initializeStateFromBatch(rawInitial as unknown as DeliveryEnvelope);
+    setRecordsState(initial);
+    setSelectedKey(null);
+  };
+
   // Export ZIP handler
   const handleExportZip = async () => {
     try {
@@ -209,7 +233,6 @@ export const App: React.FC = () => {
 
     switch (stepNumber) {
       case 1: {
-        // Step 1: Initial Import
         const newState = initializeStateFromBatch(rawInitial as unknown as DeliveryEnvelope);
         setRecordsState(newState);
         return {
@@ -218,7 +241,6 @@ export const App: React.FC = () => {
         };
       }
       case 2: {
-        // Step 2: Repeat Import
         const { newState, updatedCount, ignoredCount, addedCount } = applyBatch(
           recordsState,
           rawInitial as unknown as DeliveryEnvelope
@@ -230,7 +252,6 @@ export const App: React.FC = () => {
         };
       }
       case 3: {
-        // Step 3: Manual Route Override on M07
         const updated = updateRecordRoute(
           recordsState,
           m07Key,
@@ -244,7 +265,6 @@ export const App: React.FC = () => {
         };
       }
       case 4: {
-        // Step 4: Import 02_update.json
         const { newState } = applyBatch(
           recordsState,
           rawUpdate as unknown as DeliveryEnvelope
@@ -260,7 +280,6 @@ export const App: React.FC = () => {
         };
       }
       case 5: {
-        // Step 5: Re-import 01_initial.json after update
         const { newState, ignoredCount } = applyBatch(
           recordsState,
           rawInitial as unknown as DeliveryEnvelope
@@ -282,16 +301,12 @@ export const App: React.FC = () => {
   // Run complete suite
   const handleRunFullSuite = () => {
     let s = initializeStateFromBatch(rawInitial as unknown as DeliveryEnvelope);
-    // Step 2: repeat
     const rep1 = applyBatch(s, rawInitial as unknown as DeliveryEnvelope);
     s = rep1.newState;
-    // Step 3: override M07
     const m07Key = makeRecordKey('meeting', '4f304fff-fd40-5cfc-a366-0a134c445c2a');
     s = updateRecordRoute(s, m07Key, 'deal_next_steps', 'Manager manual evaluation prior to late transcript update');
-    // Step 4: apply update
     const rep2 = applyBatch(s, rawUpdate as unknown as DeliveryEnvelope);
     s = rep2.newState;
-    // Step 5: re-import initial
     const rep3 = applyBatch(s, rawInitial as unknown as DeliveryEnvelope);
     s = rep3.newState;
 
@@ -313,60 +328,105 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleSwitchToInboxWithFilter = (filterType: string, filterVal: string) => {
+    if (filterType === 'person') {
+      setSelectedPerson(filterVal);
+    } else if (filterType === 'route') {
+      setSelectedRoute(filterVal);
+    }
+    setActiveTab('inbox');
+  };
+
   const selectedRecordState = selectedKey ? recordsState[selectedKey] : null;
 
   return (
-    <div className="app-container">
-      {/* Top Navbar */}
-      <Navbar 
+    <div className="app-layout">
+      {/* Executive Dark Left Sidebar */}
+      <Sidebar 
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
         currentRevision={currentMaxRevision}
         totalRecords={Object.keys(recordsState).length}
         usableTranscripts={totalUsableCount}
-        onOpenReplay={() => setIsReplayOpen(true)}
-        onOpenBrief={() => setIsBriefOpen(true)}
+        onTogglePostUpdate={handleLoadPostUpdate}
+        onToggleInitialBatch={handleLoadInitialBatch}
         onExportZip={handleExportZip}
         onReset={handleResetToInitial}
         isExporting={isExporting}
       />
 
-      {/* KPI Cards */}
-      <KpiCards 
-        records={allRecordsList}
-        onSelectReviewState={(st) => setSelectedReviewState(st)}
-      />
+      {/* Main Content Area */}
+      <div className="app-main">
+        <TopBar 
+          activeTab={activeTab}
+          totalRecords={Object.keys(recordsState).length}
+          usableTranscripts={totalUsableCount}
+          onOpenMetricsGuide={() => setIsMetricsGuideOpen(true)}
+        />
 
-      {/* Filter Toolbar */}
-      <FilterToolbar 
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        selectedSourceType={selectedSourceType}
-        onSourceTypeChange={setSelectedSourceType}
-        selectedPerson={selectedPerson}
-        onPersonChange={setSelectedPerson}
-        selectedRoute={selectedRoute}
-        onRouteChange={setSelectedRoute}
-        selectedReviewState={selectedReviewState}
-        onReviewStateChange={setSelectedReviewState}
-        personOptions={personOptions}
-        totalFiltered={filteredRecords.length}
-        totalRecords={allRecordsList.length}
-        onClearFilters={() => {
-          setSearchQuery('');
-          setSelectedSourceType('all');
-          setSelectedPerson('all');
-          setSelectedRoute('all');
-          setSelectedReviewState('all');
-        }}
-      />
+        <main className="app-main-content">
+          {activeTab === 'inbox' && (
+            <InboxView 
+              records={allRecordsList}
+              filteredRecords={filteredRecords}
+              selectedKey={selectedKey}
+              onSelectRecord={setSelectedKey}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              selectedSourceType={selectedSourceType}
+              onSourceTypeChange={setSelectedSourceType}
+              selectedPerson={selectedPerson}
+              onPersonChange={setSelectedPerson}
+              selectedRoute={selectedRoute}
+              onRouteChange={setSelectedRoute}
+              selectedReviewState={selectedReviewState}
+              onReviewStateChange={setSelectedReviewState}
+              personOptions={personOptions}
+              onClearFilters={() => {
+                setSearchQuery('');
+                setSelectedSourceType('all');
+                setSelectedPerson('all');
+                setSelectedRoute('all');
+                setSelectedReviewState('all');
+              }}
+              onOpenMetricsGuide={() => setIsMetricsGuideOpen(true)}
+            />
+          )}
 
-      {/* Main Records Table */}
-      <RecordsTable 
-        records={filteredRecords}
-        selectedKey={selectedKey}
-        onSelectRecord={(key) => setSelectedKey(key)}
-      />
+          {activeTab === 'analytics' && (
+            <AnalyticsView 
+              records={allRecordsList}
+              selectedPerson={selectedPerson}
+              onSelectPerson={setSelectedPerson}
+              onClearPersonFilter={() => setSelectedPerson('all')}
+              onSwitchToInboxWithFilter={handleSwitchToInboxWithFilter}
+            />
+          )}
 
-      {/* Slide-in Detail Drawer */}
+          {activeTab === 'brief' && (
+            <BriefView 
+              onJumpToRecord={handleJumpToRecord}
+            />
+          )}
+
+          {activeTab === 'replay' && (
+            <ReplayView 
+              currentState={recordsState}
+              onExecuteStep={handleExecuteReplayStep}
+              onRunFullSuite={handleRunFullSuite}
+              onResetToInitial={handleResetToInitial}
+            />
+          )}
+
+          {activeTab === 'presentation' && (
+            <SlidesView 
+              onJumpToRecord={handleJumpToRecord}
+            />
+          )}
+        </main>
+      </div>
+
+      {/* Slide-in Detail Drawer (accessible from any view) */}
       {selectedRecordState && (
         <RecordDrawer 
           recordState={selectedRecordState}
@@ -376,21 +436,10 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Replay Modal */}
-      <ReplayModal 
-        isOpen={isReplayOpen}
-        onClose={() => setIsReplayOpen(false)}
-        currentState={recordsState}
-        onExecuteStep={handleExecuteReplayStep}
-        onRunFullSuite={handleRunFullSuite}
-        onResetToInitial={handleResetToInitial}
-      />
-
-      {/* Manager Brief Modal */}
-      <ManagerBriefModal 
-        isOpen={isBriefOpen}
-        onClose={() => setIsBriefOpen(false)}
-        onJumpToRecord={handleJumpToRecord}
+      {/* Metric Definitions & Denominators Guide Modal */}
+      <MetricsGuideModal 
+        isOpen={isMetricsGuideOpen}
+        onClose={() => setIsMetricsGuideOpen(false)}
       />
     </div>
   );
